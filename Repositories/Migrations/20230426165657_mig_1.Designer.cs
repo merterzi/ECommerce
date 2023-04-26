@@ -10,8 +10,8 @@ using Repositories.Context;
 
 namespace Repositories.Migrations
 {
-    [DbContext(typeof(RepositoryContext))]
-    [Migration("20230426104215_mig_1")]
+    [DbContext(typeof(ECommerceDbContext))]
+    [Migration("20230426165657_mig_1")]
     partial class mig_1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -4,9 +4,9 @@ using Repositories.EntityFrameworkCore.Config;
 
 namespace Repositories.Context
 {
-    public class RepositoryContext : DbContext
+    public class ECommerceDbContext : DbContext
     {
-        public RepositoryContext(DbContextOptions options) : base(options) { }
+        public ECommerceDbContext(DbContextOptions options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

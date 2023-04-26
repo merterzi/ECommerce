@@ -13,6 +13,6 @@ namespace Repositories.EntityFrameworkCore.Config
                     new Category() { Id = 1, CategoryName = "Bilgisayar"},
                     new Category() { Id = 2, CategoryName = "Telefon" }
                 );
-        }
+        } 
     }
 }

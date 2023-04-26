@@ -9,8 +9,8 @@ using Repositories.Context;
 
 namespace Repositories.Migrations
 {
-    [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ECommerceDbContext))]
+    partial class ECommerceDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
