@@ -1,14 +1,14 @@
-# E-Commerce Project
-*The project was developed with using Asp.Net Core and a multi-layered architecture.
+# E-Commerce Proje
+*Asp.Net Core kullanılarak ve çok katmanlı bir mimari ile geliştirilmiştir.
 
-*The 'Code First' approach was used in the project.
+*'Code First' yaklaşımı kullanıldı.
 
-## Used Patterns
+## Kullanılan Pattern'ler
 -Generic Repository Pattern
-  
-      It is a pattern used to avoid code duplication and increase manageability. In our project, a common structure is created
-      instead of repeatedly applying the methods that are common to each model. This structure is the 'Generic Repository Pattern'.
-      
+
+  Kod tekrarını önlemek ve yönetilebilirliği artırmak için kullanılan bir pattern'dir. Projemizde herbir model için 
+  ortak olan metotları tekrar tekrar uygulamak yerine ortak bir yapı oluşturulur. İşte bu yapı Generic Repositry Pattern'dir.
+
 -Unit Of Work
 
-      It ensures that changes to the database are reflected collectively instead of instantly.
+  Veritabanıyla ilgili her değişikliğin anlık olarak veritabanına yansıtılması yerine toplu bir şekilde yansıtılmasını sağlar.                                        
