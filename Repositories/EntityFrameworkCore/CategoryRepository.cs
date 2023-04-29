@@ -4,9 +4,9 @@ using Repositories.Contracts;
 
 namespace Repositories.EntityFrameworkCore
 {
-    public class ProductRepository : RepositoryBase<Product>, IProductRepository
+    public class CategoryRepository : RepositoryBase<Category>, ICategoryRepository
     {
-        public ProductRepository(ECommerceDbContext context) : base(context)
+        public CategoryRepository(ECommerceDbContext context) : base(context)
         {
         }
     }

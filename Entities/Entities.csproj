@@ -6,4 +6,19 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Context\**" />
+    <Compile Remove="Contracts\**" />
+    <Compile Remove="EntityFrameworkCore\**" />
+    <Compile Remove="Migrations\**" />
+    <EmbeddedResource Remove="Context\**" />
+    <EmbeddedResource Remove="Contracts\**" />
+    <EmbeddedResource Remove="EntityFrameworkCore\**" />
+    <EmbeddedResource Remove="Migrations\**" />
+    <None Remove="Context\**" />
+    <None Remove="Contracts\**" />
+    <None Remove="EntityFrameworkCore\**" />
+    <None Remove="Migrations\**" />
+  </ItemGroup>
+
 </Project>

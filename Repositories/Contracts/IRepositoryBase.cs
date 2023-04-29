@@ -1,4 +1,4 @@
-﻿    using Entities;
+﻿using Entities.Models;
 using System.Linq.Expressions;
 
 namespace Repositories.Contracts
@@ -8,7 +8,8 @@ namespace Repositories.Contracts
     {
         IQueryable<T> GetAll(bool trackChanges);
         IQueryable<T> GetAllByCondition(Expression<Func<T, bool>> filter, bool trackChanges);
-        void Add(T entity);
+        Task<T> GetByConditionAsync(Expression<Func<T, bool>> filter, bool trackChanges);
+        Task AddAsync(T entity);
         void Remove(T entity);
         void Update(T entity);
     }

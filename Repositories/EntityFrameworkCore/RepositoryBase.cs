@@ -1,4 +1,4 @@
-﻿using Entities;
+﻿using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
 using Repositories.Contracts;
@@ -16,7 +16,7 @@ namespace Repositories.EntityFrameworkCore
             _context = context;
         }
 
-        public void Add(T entity) => _context.Set<T>().Add(entity);
+        public async Task AddAsync(T entity) => await _context.Set<T>().AddAsync(entity);
 
         public IQueryable<T> GetAll(bool trackChanges) =>
             !trackChanges
@@ -27,6 +27,11 @@ namespace Repositories.EntityFrameworkCore
             !trackChanges
             ? _context.Set<T>().Where(filter).AsNoTracking()
             : _context.Set<T>().Where(filter);
+
+        public async Task<T> GetByConditionAsync(Expression<Func<T, bool>> filter, bool trackChanges) =>
+            !trackChanges
+            ? await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(filter)
+            : await _context.Set<T>().FirstOrDefaultAsync(filter);
 
         public void Remove(T entity) => _context.Set<T>().Remove(entity);
 
