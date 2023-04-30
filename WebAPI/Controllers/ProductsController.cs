@@ -33,8 +33,22 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] ProductDtoForInsertion productDto)
         {
-            await _productService.AddProductAsync(productDto);
-            return Ok(productDto);
+            var product = await _productService.AddProductAsync(productDto);
+            return StatusCode(201, product);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteProduct([FromRoute(Name = "id")] int id)
+        {
+            await _productService.DeleteProductAsync(id, false);
+            return NoContent();
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateProduct([FromRoute(Name = "id")] int id, [FromBody] ProductDtoForUpdate productDto)
+        {
+            await _productService.UpdateProductAsync(id, productDto, false);
+            return NoContent();
         }
     }
 }

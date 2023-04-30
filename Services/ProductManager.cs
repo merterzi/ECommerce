@@ -59,6 +59,7 @@ namespace Services
 
             product = _mapper.Map<Product>(productDto);
             _unitOfWork.Product.Update(product);
+            await _unitOfWork.SaveAsync();
         }
     }
 }

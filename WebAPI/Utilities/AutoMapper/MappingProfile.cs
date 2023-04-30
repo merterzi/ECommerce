@@ -9,6 +9,7 @@ namespace WebAPI.Utilities.AutoMapper
         public MappingProfile()
         {
             CreateMap<ProductDtoForInsertion, Product>();
+            CreateMap<ProductDtoForUpdate, Product>();
             CreateMap<Product, ProductDto>();
         }
     }
