@@ -12,6 +12,7 @@ builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureRepositories();
 builder.Services.ConfigureUnitOfWork();
 builder.Services.ConfigureServices();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

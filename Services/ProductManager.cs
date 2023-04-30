@@ -1,4 +1,6 @@
-﻿using Entities.Models;
+﻿using AutoMapper;
+using Entities.DTOs;
+using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Contracts;
 using Services.Contracts;
@@ -8,53 +10,55 @@ namespace Services
     public class ProductManager : IProductService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ProductManager(IUnitOfWork unitOfWork)
+        public ProductManager(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
-        public async Task<Product> AddProductAsync(Product product)
+        public async Task<ProductDto> AddProductAsync(ProductDtoForInsertion productDto)
         {
+            var product = _mapper.Map<Product>(productDto);
             await _unitOfWork.Product.AddAsync(product);
             await _unitOfWork.SaveAsync();
-            return product;
+            return _mapper.Map<ProductDto>(product);
         }
 
         public async Task DeleteProductAsync(int id, bool trackChanges)
         {
-            var entity = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
-            if (entity is null)
+            var product = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
+            if (product is null)
                 throw new Exception("The product could not found.");
 
-            _unitOfWork.Product.Remove(entity);
+            _unitOfWork.Product.Remove(product);
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges) => 
-            await _unitOfWork.Product.GetAll(trackChanges).ToListAsync();
-
-        public async Task<Product> GetProductByIdAsync(int id, bool trackChanges)
+        public async Task<IEnumerable<ProductDto>> GetAllProductsAsync(bool trackChanges)
         {
-            var entity = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
-            if (entity is null)
-                throw new Exception("The product could not found");
-
-            return entity;
+            var products = await _unitOfWork.Product.GetAll(trackChanges).ToListAsync();
+            return _mapper.Map<IEnumerable<ProductDto>>(products);
         }
 
-        public async Task UpdateProductAsync(int id, Product product, bool trackChanges)
+        public async Task<ProductDto> GetProductByIdAsync(int id, bool trackChanges)
         {
-            var entity = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
-            if (entity is null)
+            var product = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
+            if (product is null)
                 throw new Exception("The product could not found");
 
-            entity.ProductName = product.ProductName;
-            entity.Stock = product.Stock;
-            entity.Price = product.Price;
-            entity.CategoryId = product.CategoryId;
+            return _mapper.Map<ProductDto>(product);
+        }
 
-            _unitOfWork.Product.Update(entity);
+        public async Task UpdateProductAsync(int id, ProductDtoForUpdate productDto, bool trackChanges)
+        {
+            var product = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
+            if (product is null)
+                throw new Exception("The product could not found");
+
+            product = _mapper.Map<Product>(productDto);
+            _unitOfWork.Product.Update(product);
         }
     }
 }
