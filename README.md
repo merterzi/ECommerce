@@ -3,6 +3,8 @@
 
 *'Code First' yaklaşımı kullanıldı.
 
+*Farklı türdeki nesneleri birbirine dönüştürmek için 'AutoMapper' kütüphanesi kullanıldı.
+
 ## Kullanılan Pattern'ler
 -Generic Repository Pattern
 
