@@ -5,6 +5,8 @@
 
 *Farklı türdeki nesneleri birbirine dönüştürmek için 'AutoMapper' kütüphanesi kullanıldı.
 
+*Hataları tek bir yerden yönetebileceğimiz bir yapı kuruldu.(WebAPI/Extensions/ExceptionMiddlewareExtensions)
+
 ## Kullanılan Pattern'ler
 -Generic Repository Pattern
 
