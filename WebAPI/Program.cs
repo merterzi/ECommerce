@@ -16,6 +16,8 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
+app.ConfigureExceptionMiddleware();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

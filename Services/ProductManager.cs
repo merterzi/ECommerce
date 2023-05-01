@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Entities.DTOs;
+using Entities.Exceptions;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Contracts;
@@ -28,10 +29,7 @@ namespace Services
 
         public async Task DeleteProductAsync(int id, bool trackChanges)
         {
-            var product = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
-            if (product is null)
-                throw new Exception("The product could not found.");
-
+            var product = await GetProductByIdAndCheckExistsAsync(id, trackChanges);
             _unitOfWork.Product.Remove(product);
             await _unitOfWork.SaveAsync();
         }
@@ -44,22 +42,24 @@ namespace Services
 
         public async Task<ProductDto> GetProductByIdAsync(int id, bool trackChanges)
         {
-            var product = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
-            if (product is null)
-                throw new Exception("The product could not found");
-
+            var product = await GetProductByIdAndCheckExistsAsync(id, trackChanges);
             return _mapper.Map<ProductDto>(product);
         }
 
         public async Task UpdateProductAsync(int id, ProductDtoForUpdate productDto, bool trackChanges)
         {
-            var product = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
-            if (product is null)
-                throw new Exception("The product could not found");
-
+            var product = await GetProductByIdAndCheckExistsAsync(id, trackChanges);
             product = _mapper.Map<Product>(productDto);
             _unitOfWork.Product.Update(product);
             await _unitOfWork.SaveAsync();
+        }
+
+        private async Task<Product> GetProductByIdAndCheckExistsAsync(int id, bool trackChanges)
+        {
+            var product = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
+            if (product is null)
+                throw new ProductNotFoundException();
+            return product;
         }
     }
 }
