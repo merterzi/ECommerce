@@ -1,9 +1,10 @@
 ﻿using Entities.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.ActionFilters;
 using Services.Contracts;
 
-namespace WebAPI.Controllers
+namespace Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -30,6 +31,7 @@ namespace WebAPI.Controllers
             return Ok(product);
         }
 
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] ProductDtoForInsertion productDto)
         {
@@ -44,6 +46,7 @@ namespace WebAPI.Controllers
             return NoContent();
         }
 
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateProduct([FromRoute(Name = "id")] int id, [FromBody] ProductDtoForUpdate productDto)
         {
