@@ -1,8 +1,10 @@
 ﻿using Entities.DTOs;
-using Microsoft.AspNetCore.Http;
+using Entities.RequestFeatures;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Presentation.ActionFilters;
 using Services.Contracts;
+using System.Text.Json;
 
 namespace Presentation.Controllers
 {
@@ -18,10 +20,12 @@ namespace Presentation.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllProductsAsync()
+        public async Task<IActionResult> GetAllProducts([FromQuery] ProductParameters productParameters)
         {
-            var products = await _productService.GetAllProductsAsync(false);
-            return Ok(products);
+            var result = await _productService.GetAllProductsAsync(productParameters, false);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(result.metaData));
+
+            return Ok(result.products);
         }
 
         [HttpGet("{id:int}")]

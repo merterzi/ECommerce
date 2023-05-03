@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Entities.DTOs;
 using Entities.Models;
+using Entities.RequestFeatures;
 
 namespace WebAPI.Utilities.AutoMapper
 {

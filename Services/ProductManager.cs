@@ -2,6 +2,7 @@
 using Entities.DTOs;
 using Entities.Exceptions;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Contracts;
 using Services.Contracts;
@@ -34,10 +35,11 @@ namespace Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllProductsAsync(bool trackChanges)
+        public async Task<(IEnumerable<ProductDto> products, MetaData metaData)> GetAllProductsAsync(ProductParameters productParameters, bool trackChanges)
         {
-            var products = await _unitOfWork.Product.GetAll(trackChanges).ToListAsync();
-            return _mapper.Map<IEnumerable<ProductDto>>(products);
+            var productsWithMetaData = await _unitOfWork.Product.GetAllProductsAsync(productParameters, trackChanges);
+            var productDto = _mapper.Map<IEnumerable<ProductDto>>(productsWithMetaData);
+            return (productDto, productsWithMetaData.MetaData);
         }
 
         public async Task<ProductDto> GetProductByIdAsync(int id, bool trackChanges)
