@@ -7,6 +7,12 @@
 
 *Hataları tek bir yerden yönetebileceğimiz bir yapı kuruldu.(WebAPI/Extensions/ExceptionMiddlewareExtensions)
 
+*WebAPI Projesi sadece konfigürasyonları içerir ve Controller'lar Presentation katmanındadır.
+
+*Validation işlemi 'FluentValidation' kullanılarak yapılmıştır.
+
+*Query string'den alınan parametrelere göre sayfalama yapılabilir durumdadır.
+
 ## Kullanılan Pattern'ler
 -Generic Repository Pattern
 
