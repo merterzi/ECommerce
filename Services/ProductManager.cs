@@ -3,7 +3,7 @@ using Entities.DTOs;
 using Entities.Exceptions;
 using Entities.Models;
 using Entities.RequestFeatures;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Repositories.Contracts;
 using Services.Contracts;
 
@@ -13,15 +13,19 @@ namespace Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        IMemoryCache _memoryCache;
 
-        public ProductManager(IUnitOfWork unitOfWork, IMapper mapper)
+        public ProductManager(IUnitOfWork unitOfWork, IMapper mapper, IMemoryCache memoryCache)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _memoryCache = memoryCache;
         }
 
         public async Task<ProductDto> AddProductAsync(ProductDtoForInsertion productDto)
         {
+            _memoryCache.Remove("products");
+            _memoryCache.Remove("product");
             var product = _mapper.Map<Product>(productDto);
             await _unitOfWork.Product.AddAsync(product);
             await _unitOfWork.SaveAsync();
@@ -30,6 +34,8 @@ namespace Services
 
         public async Task DeleteProductAsync(int id, bool trackChanges)
         {
+            _memoryCache.Remove("products");
+            _memoryCache.Remove("product");
             var product = await GetProductByIdAndCheckExistsAsync(id, trackChanges);
             _unitOfWork.Product.Remove(product);
             await _unitOfWork.SaveAsync();
@@ -37,19 +43,33 @@ namespace Services
 
         public async Task<(IEnumerable<ProductDto> products, MetaData metaData)> GetAllProductsAsync(ProductParameters productParameters, bool trackChanges)
         {
-            var productsWithMetaData = await _unitOfWork.Product.GetAllProductsAsync(productParameters, trackChanges);
-            var productDto = _mapper.Map<IEnumerable<ProductDto>>(productsWithMetaData);
-            return (productDto, productsWithMetaData.MetaData);
+            if (!_memoryCache.TryGetValue("products", out (IEnumerable<ProductDto> products, MetaData metaData) result))
+            {
+                var productsWithMetaData = await _unitOfWork.Product.GetAllProductsAsync(productParameters, trackChanges);
+                var productDto = _mapper.Map<IEnumerable<ProductDto>>(productsWithMetaData);
+                _memoryCache.Set<(IEnumerable<ProductDto> products, 
+                    MetaData metaData)>("products", (productDto, productsWithMetaData.MetaData), 
+                    DateTime.Now.AddMinutes(1));
+            }
+            result = _memoryCache.Get<(IEnumerable<ProductDto> products, MetaData metaData)>("products");
+            return (result.products, result.metaData);
         }
 
         public async Task<ProductDto> GetProductByIdAsync(int id, bool trackChanges)
         {
-            var product = await GetProductByIdAndCheckExistsAsync(id, trackChanges);
-            return _mapper.Map<ProductDto>(product);
+            if (!_memoryCache.TryGetValue("product", out ProductDto productDto))
+            {
+                var product = await GetProductByIdAndCheckExistsAsync(id, trackChanges);
+                productDto = _mapper.Map<ProductDto>(product);
+                _memoryCache.Set<ProductDto>("product", productDto);
+            }
+            return _memoryCache.Get<ProductDto>("product");
         }
 
         public async Task UpdateProductAsync(int id, ProductDtoForUpdate productDto, bool trackChanges)
         {
+            _memoryCache.Remove("products");
+            _memoryCache.Remove("product");
             var product = await GetProductByIdAndCheckExistsAsync(id, trackChanges);
             product = _mapper.Map<Product>(productDto);
             _unitOfWork.Product.Update(product);

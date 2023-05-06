@@ -22,6 +22,7 @@ builder.Services.ConfigureServices();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureValidation();
 builder.Services.ConfigureActionFilters();
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
