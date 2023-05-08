@@ -13,6 +13,10 @@
 
 *Query string'den alınan parametrelere göre sayfalama yapılabilir durumdadır.
 
+*Filtreleme, arama ve sıralama işlemleri yapıldı.
+
+*In-Memory Cache yapılanması kuruldu.
+
 ## Kullanılan Pattern'ler
 -Generic Repository Pattern
 
