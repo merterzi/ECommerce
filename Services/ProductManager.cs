@@ -13,7 +13,7 @@ namespace Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        IMemoryCache _memoryCache;
+        private readonly IMemoryCache _memoryCache;
 
         public ProductManager(IUnitOfWork unitOfWork, IMapper mapper, IMemoryCache memoryCache)
         {
@@ -47,23 +47,24 @@ namespace Services
             {
                 var productsWithMetaData = await _unitOfWork.Product.GetAllProductsAsync(productParameters, trackChanges);
                 var productDto = _mapper.Map<IEnumerable<ProductDto>>(productsWithMetaData);
-                _memoryCache.Set<(IEnumerable<ProductDto> products, 
-                    MetaData metaData)>("products", (productDto, productsWithMetaData.MetaData), 
+                _memoryCache.Set<(IEnumerable<ProductDto> products,
+                    MetaData metaData)>("products", (productDto, productsWithMetaData.MetaData),
                     DateTime.Now.AddMinutes(1));
             }
             result = _memoryCache.Get<(IEnumerable<ProductDto> products, MetaData metaData)>("products");
             return (result.products, result.metaData);
         }
 
+        public Task<IEnumerable<ProductDto>> GetAllProductsWithDetails(bool trackChanges)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ProductDto> GetProductByIdAsync(int id, bool trackChanges)
         {
-            if (!_memoryCache.TryGetValue("product", out ProductDto productDto))
-            {
-                var product = await GetProductByIdAndCheckExistsAsync(id, trackChanges);
-                productDto = _mapper.Map<ProductDto>(product);
-                _memoryCache.Set<ProductDto>("product", productDto);
-            }
-            return _memoryCache.Get<ProductDto>("product");
+            var product = await GetProductByIdAndCheckExistsAsync(id, trackChanges);
+            var productDto = _mapper.Map<ProductDto>(product);
+            return productDto;
         }
 
         public async Task UpdateProductAsync(int id, ProductDtoForUpdate productDto, bool trackChanges)
@@ -80,8 +81,9 @@ namespace Services
         {
             var product = await _unitOfWork.Product.GetByConditionAsync(p => p.Id == id, trackChanges);
             if (product is null)
-                throw new ProductNotFoundException();
+                throw new ProductNotFoundException(id);
             return product;
         }
+
     }
 }

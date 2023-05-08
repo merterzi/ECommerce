@@ -9,7 +9,7 @@ namespace Repositories.EntityFrameworkCore
     public class RepositoryBase<T> : IRepositoryBase<T>
         where T : BaseEntity, new()
     {
-        private readonly ECommerceDbContext _context;
+        protected readonly ECommerceDbContext _context;
 
         public RepositoryBase(ECommerceDbContext context)
         {

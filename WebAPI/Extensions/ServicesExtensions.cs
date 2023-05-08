@@ -29,6 +29,7 @@ namespace WebAPI.Extensions
         public static void ConfigureServices(this IServiceCollection services)
         {
             services.AddScoped<IProductService, ProductManager>();
+            services.AddScoped<ICategoryService, CategoryManager>();
         }
         public static void ConfigureValidation(this IServiceCollection services)
         {

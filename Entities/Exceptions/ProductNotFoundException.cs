@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Entities.Exceptions
+﻿namespace Entities.Exceptions
 {
-    public class ProductNotFoundException : NotFoundException
+    public sealed class ProductNotFoundException : NotFoundException
     {
-        public ProductNotFoundException() : base("The product could not found.") { }
+        public ProductNotFoundException(int id) : base($"The product with : {id} could not found.") { }
     }
 }
