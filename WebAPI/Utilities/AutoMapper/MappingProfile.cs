@@ -12,6 +12,10 @@ namespace WebAPI.Utilities.AutoMapper
             CreateMap<ProductDtoForInsertion, Product>();
             CreateMap<ProductDtoForUpdate, Product>();
             CreateMap<Product, ProductDto>();
+            CreateMap<Product, ProductDetailsDto>();
+
+            CreateMap<CategoryDto, Category>().ReverseMap();
+            CreateMap<Category, CategoryDetailsDto>();
         }
     }
 }

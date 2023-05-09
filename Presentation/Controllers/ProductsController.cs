@@ -28,6 +28,12 @@ namespace Presentation.Controllers
             return Ok(result.products);
         }
 
+        [HttpGet("details")]
+        public async Task<IActionResult> GetAllProductsWithDetails()
+        {
+            return Ok(await _productService.GetAllProductsWithDetailsAsync(false));
+        }
+
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute(Name = "id")] int id)
         {

@@ -23,5 +23,10 @@ namespace Repositories.EntityFrameworkCore
 
             return PagedList<Product>.ToPagedList(products, productParameters.PageNumber, productParameters.PageSize);
         }
+
+        public async Task<IEnumerable<Product>> GetAllProductsWithDetailsAsync(bool trackChanges) =>
+            !trackChanges
+            ? await _context.Products.Include(p => p.Category).AsNoTracking().ToListAsync()
+            : await _context.Products.Include(p => p.Category).ToListAsync();
     }
 }

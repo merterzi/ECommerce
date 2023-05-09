@@ -14,18 +14,22 @@ namespace Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IMemoryCache _memoryCache;
+        private readonly ICategoryService _categoryService;
 
-        public ProductManager(IUnitOfWork unitOfWork, IMapper mapper, IMemoryCache memoryCache)
+        public ProductManager(IUnitOfWork unitOfWork, IMapper mapper, IMemoryCache memoryCache, ICategoryService categoryService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _memoryCache = memoryCache;
+            _categoryService = categoryService;
         }
 
         public async Task<ProductDto> AddProductAsync(ProductDtoForInsertion productDto)
         {
             _memoryCache.Remove("products");
             _memoryCache.Remove("product");
+
+            var category = await _categoryService.GetCategoryByIdAsync(productDto.CategoryId, false);
             var product = _mapper.Map<Product>(productDto);
             await _unitOfWork.Product.AddAsync(product);
             await _unitOfWork.SaveAsync();
@@ -55,9 +59,11 @@ namespace Services
             return (result.products, result.metaData);
         }
 
-        public Task<IEnumerable<ProductDto>> GetAllProductsWithDetails(bool trackChanges)
+        public async Task<IEnumerable<ProductDetailsDto>> GetAllProductsWithDetailsAsync(bool trackChanges)
         {
-            throw new NotImplementedException();
+            var products = await _unitOfWork.Product.GetAllProductsWithDetailsAsync(trackChanges);
+            var productsDto = _mapper.Map<IEnumerable<ProductDetailsDto>>(products);
+            return productsDto;
         }
 
         public async Task<ProductDto> GetProductByIdAsync(int id, bool trackChanges)
@@ -71,6 +77,8 @@ namespace Services
         {
             _memoryCache.Remove("products");
             _memoryCache.Remove("product");
+
+            var category = await _categoryService.GetCategoryByIdAsync(productDto.CategoryId, false);
             var product = await GetProductByIdAndCheckExistsAsync(id, trackChanges);
             product = _mapper.Map<Product>(productDto);
             _unitOfWork.Product.Update(product);
