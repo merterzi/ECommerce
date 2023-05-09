@@ -1,3 +1,4 @@
+using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Extensions;
 
@@ -27,6 +28,8 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.ConfigureValidation();
 builder.Services.ConfigureActionFilters();
 builder.Services.AddMemoryCache();
+builder.Services.ConfigureRateLimiting();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -39,6 +42,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseIpRateLimiting();
 
 app.UseAuthorization();
 
