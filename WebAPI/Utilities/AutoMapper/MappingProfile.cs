@@ -16,6 +16,8 @@ namespace WebAPI.Utilities.AutoMapper
 
             CreateMap<CategoryDto, Category>().ReverseMap();
             CreateMap<Category, CategoryDetailsDto>();
+
+            CreateMap<UserForRegistrationDto, User>();
         }
     }
 }

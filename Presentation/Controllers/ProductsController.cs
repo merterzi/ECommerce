@@ -1,5 +1,6 @@
 ﻿using Entities.DTOs;
 using Entities.RequestFeatures;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Presentation.ActionFilters;
@@ -19,6 +20,7 @@ namespace Presentation.Controllers
             _productService = productService;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAllProducts([FromQuery] ProductParameters productParameters)
         {
@@ -28,12 +30,14 @@ namespace Presentation.Controllers
             return Ok(result.products);
         }
 
+        [Authorize]
         [HttpGet("details")]
         public async Task<IActionResult> GetAllProductsWithDetails()
         {
             return Ok(await _productService.GetAllProductsWithDetailsAsync(false));
         }
 
+        [Authorize]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute(Name = "id")] int id)
         {
@@ -41,6 +45,7 @@ namespace Presentation.Controllers
             return Ok(product);
         }
 
+        [Authorize]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [HttpPost]
         public async Task<IActionResult> CreateProduct([FromBody] ProductDtoForInsertion productDto)
@@ -49,6 +54,7 @@ namespace Presentation.Controllers
             return StatusCode(201, product);
         }
 
+        [Authorize]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteProduct([FromRoute(Name = "id")] int id)
         {
@@ -56,6 +62,7 @@ namespace Presentation.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateProduct([FromRoute(Name = "id")] int id, [FromBody] ProductDtoForUpdate productDto)

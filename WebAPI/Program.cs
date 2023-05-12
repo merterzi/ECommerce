@@ -30,6 +30,8 @@ builder.Services.ConfigureActionFilters();
 builder.Services.AddMemoryCache();
 builder.Services.ConfigureRateLimiting();
 builder.Services.AddHttpContextAccessor();
+builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJwt(builder.Configuration);
 
 var app = builder.Build();
 
@@ -44,6 +46,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseIpRateLimiting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
